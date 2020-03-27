@@ -1,0 +1,430 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <!--ANIMATE.CSS-->
+    <link rel="stylesheet" href="animate.css">
+    <!--REACT-->
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    
+
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <!-- MAPBOX -->
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+    <!--GOOGLE FONT-->
+    <link href='https://fonts.googleapis.com/css?family=Abril Fatface' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css?family=Courgette&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet">
+
+    <!--BOOTSTRAP-->
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+</head>
+<style>
+    html, body {
+        /* font-family: Playfair Display; */
+        /* background-image: url("volvoBigGrey.jpg"); */
+        background-image: url("backgStripes.jpg");
+        background-attachment: fixed;
+        background-position: center center;
+        background-repeat: repeat;
+    }
+header{
+    background-image:url("autumn2.jpg");
+    background-size: cover;
+    position: fixed;
+    height: 70px;
+}
+article{
+    margin-top: 130px;
+}
+ul{
+    list-style-image: url("dotLil.png");
+}
+li{
+    margin-top:10px;
+    margin-bottom: 10px;
+}
+hr{
+    border-top:5px dotted #d8d1bf;
+    padding: 5px;
+}
+.map{
+    width: 80%;
+    height: 500px;
+    margin: 0 auto;
+    box-shadow: 0px 0px 20px black;
+}
+footer{
+background-color: rgba(255, 255, 255, 0.8);
+box-shadow: 0px 0px 20px black;
+}
+a:link, a:visited, a:hover, a:active{
+    color:black;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 800px){
+.map{
+    width: 100%;
+    height: 300px;
+    margin: 0 auto;
+}
+
+}
+
+
+
+</style>
+<body>
+<header class="fixed-top"></header>
+<article>
+</article>
+<footer style="padding-bottom: 10px;" class="col-12 col-lg-8 mx-auto">
+    <div class="h1 col text-center font-weight-bold p-4">KONTAKT</div>
+
+    <div class="col-11 mx-auto">
+        <div class="h4 text-left">Adres: Śląska 22/2 Szczecin</br></br>
+            Rejestracja telefoniczna w celu umówienia badań lub konsultacji w Szczecinie i Goleniowie.</br></br>Kontakt telefoniczny: +48 574 556 455
+            
+            <hr></hr>
+            Pracownia znajduje się niedaleko Teatru Pleciuga, w okolicach Galaxy. Zazwyczaj bez problemu można znaleźć wolne miejsce parkingowe blisko pracowni.
+        </div>
+    </br>
+    
+    
+
+    <div id="map" class="map"></div>
+</br></br> 
+<div class="h3 text-center font-weight-bold">W razie zainteresowania wynajmem gabinetów lub nawiązaniem współpracy zapraszamy do kontaktu telefonicznego.</div>
+</br>
+<hr></hr><div style="font-size: 12px; background-color: rgb(220, 220, 220); padding-bottom: 5px;">
+<div class="text-center"><strong>PsychoTech</strong>, Web Page made by <a href="https://www.facebook.com/pawel.durczak">Paweł Durczak</a></div>
+    <div class="text-center" style="font-size: 10px;">
+        Bus Photo by Lê Minh from Pexels; Traffic Photo by Mikechie Esparagoza from Pexels; Truck Photo by Quintin Gellar from Pexels
+    </div>
+</div>
+</div>        
+</footer>
+    <script type="text/babel">
+
+            // MAPBOX SCRIPT
+            var token = mapboxgl.accessToken = 'pk.eyJ1Ijoicm9ja2FiaWxiYW8iLCJhIjoiY2s3c3lsYjduMGlnYzNwcGNiMjJkYXBwdyJ9.5fkptTb1o2nyOIPBkINbUA';
+            var mapboxClient = mapboxSdk({ accessToken: token });
+    mapboxClient.geocoding.forwardGeocode({
+            query: 'Śląska 22, Szczecin',
+            autocomplete: false,
+            limit: 1
+        }).send().then(function(response) {
+            if (
+                response &&
+                response.body &&
+                response.body.features &&
+                response.body.features.length
+            ) {
+                var feature = response.body.features[0];
+
+                var map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/streets-v11',
+                    center: feature.center,
+                    zoom: 15
+                });
+                new mapboxgl.Marker().setLngLat(feature.center).addTo(map);
+            }
+        });
+
+    // var backgroundPicture="volvoBig.jpg";
+    // var backgroundPictureGray="";
+
+    class FixedBaner extends React.Component{
+        constructor(props){
+            super(props);
+            var allowAnimate;
+            this.onMouseOverAndClickHandler = this.onMouseOverAndClickHandler.bind(this);
+        };
+        
+        componentDidMount(){
+            console.log("Zamontowano Baner");
+            this.allowAnimate=true;
+
+            window.onscroll=function(){
+                if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                    document.getElementById("banerLogo").style.fontSize = "3em";
+                    // document.getElementById("banerLogo").style.fontWeight = "";
+                    
+                } else {
+                    document.getElementById("banerLogo").style.fontSize = "4em";
+                    // document.getElementById("banerLogo").style.fontWeight = "bold";
+  }
+            };
+        };
+
+        onMouseOverAndClickHandler(e){
+            if(this.allowAnimate){ // <-- Sprawdzenie czy minelo 1.5 sekundy
+            var komponent = this;           // -\
+            var sender=e.currentTarget;     // -->-- Zapisanie dla asynchronicznosci
+            komponent.allowAnimate=false;   // -/
+
+            sender.className="animated pulse";//    <-- animacja
+
+            setTimeout(function(){
+                sender.className="";
+                komponent.allowAnimate=true;
+            },1500);
+            };
+        };
+
+        render(){
+            var fixedBanerBarStyle={
+                transition:"0.2s",
+                userSelect:"none",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "4em",/* Responsive font size */
+                fontFamily:"Abril Fatface",
+                margin: "0 auto", /* Center the text container */
+                padding: "10px",
+                flexWrap:"wrap",
+                textAlign: "center", /* Center text */
+                position: "absolute", /* Position text */
+                top: "50%", /* Position text in the middle */
+                left: "50%", /* Position text in the middle */
+                transform: "translate(-50%, -50%)", /* Position text in the middle */
+                mixBlendMode: "screen", /* This makes the cutout text possible */
+                // fontWeight:"bold",
+                boxShadow:"0px 0px 25px black",
+            };    
+
+            return (
+                <div id="banerLogo" style={fixedBanerBarStyle} className="col">
+                <div onMouseOver={this.onMouseOverAndClickHandler} onClick={this.onMouseOverAndClickHandler}>PsychoTech</div>
+                </div>
+                );
+        };
+    };
+    
+    class TextBox extends React.Component{
+        constructor(props){
+            super(props);
+        };
+        
+        render(){
+            var fontSizeValue;
+            var textBoxWidth;
+
+            if(screen.width<=800){
+                fontSizeValue="1.2em";
+                textBoxWidth="col-11";
+
+            }else{
+                fontSizeValue="1.8em";
+                textBoxWidth="col-8";
+            };
+            var textStyle={
+                fontSize:fontSizeValue,
+                textAlign:"center",
+                margin:"0 auto",
+                padding:"20px",
+                color:"black",              
+                backgroundColor:"rgba(255, 255, 255, 0.8)",
+                boxShadow:"5px 5px 20px black",
+                
+            };
+            return (<div>
+                    <div className={textBoxWidth} style={textStyle}>{this.props.innerText}</div>
+                    </div>
+            );
+        };
+    };
+    
+    class Parallax extends React.Component{
+        constructor(props){
+            super(props);
+        };
+
+        render(){
+            var parallaxHeight;
+            var parallaxWidth;
+
+            if(screen.width<=800){
+                parallaxHeight="200px";
+                parallaxWidth="100%";
+
+            }else{
+                parallaxHeight="300px";
+                parallaxWidth="90%";
+            };
+
+            var marginLeftValue = this.props.margin=="left"?"0px":"auto";
+            var marginRightValue = this.props.margin=="right"?"0px":"auto";
+
+            var parallax={
+                backgroundImage:"url("+this.props.image+")",
+                height:parallaxHeight,
+                width:parallaxWidth,
+                marginRight: marginRightValue,
+                marginLeft: marginLeftValue,
+                boxShadow:"0px 0px 30px black",
+                backgroundAttachment:"fixed",
+                backgroundPosition:"center center",
+                backgroundRepeat:"no-repeat",
+                backgroundSize:"cover",
+            };
+            
+            var parallaxObject=<div style={parallax}></div>;
+            return parallaxObject;
+        };
+    };
+
+    class ImageTextGrid extends React.Component{
+        constructor(props){
+            super(props);
+        };
+
+        render(){
+
+           var imagePartWidth="col align-items-center";
+           var textPartWidth="col";
+           var textBoxWidth="row";
+           var fontSizeValue;
+
+            if(window.width<=800){
+                fontSizeValue="1.2em";
+            }else{
+                fontSizeValue="1.8em";
+            };
+
+            var container={
+                backgroundColor:"rgba(255, 255, 255, 0.8)",
+                boxShadow:"0px 0px 30px black",
+                padding:"60px",
+                maxWidth:(screen.width<=800)?(screen.width):(screen.width)*0.7,
+            };
+            var imgObject= <div className={imagePartWidth}><img className="img-fluid mx-auto my-auto" src={this.props.image}></img></div>;
+            return (
+  
+                <div className="container" style={container}>
+                <div className="row"><div className="col-11">{this.props.title}</div></div>
+                {(screen.width<=800 || screen.width<=800)?<div className="row">{imgObject}</div>:""}
+                    <div className="row centered">
+                        {(screen.width<=800 || screen.width<=800)?"":imgObject}
+                        <div className={textPartWidth}>{this.props.innerText}</div>
+                    </div>
+                </div>
+            );
+        };
+
+
+    };
+    
+        var badPsychList =(<div>
+            <ul className="h4  d-flex flex-column align-content-center flex-wrap">
+                <li>operatorów ciężkiego sprzętu budowlanego np. koparki, ładowarki, walca drogowego;</li>
+                <li>operatorów ciężkiego sprzętu zmechanizowanego np. suwnicy, żurawia, samojezdnego;</li>
+                <li>operatorów wózków widłowych;</li>
+                <li>osób pracujących na wysokości;</li>
+                <li>osób pracujących na stanowiskach wymagających szczególnej sprawności psychofizycznej.</li>
+            </ul>
+            <hr></hr>
+            <h3 className="font-weight-bold font-italic"><strong><i>Cena badania - 90 zł</i></strong></h3>
+            </div>);
+        var badPsychTitle=<div className="h2 text-center"><strong>BADANIA PSYCHOLOGICZNE DLA POTRZEB MEDYCYNY PRACY</strong></div>;
+
+        var badKierTitle=<div className="h2 text-center font-weight-bold">BADANIA KIEROWCÓW</div>;
+        var badKierList=(<div>
+            <ul className="h4  d-flex flex-column align-content-center flex-wrap">
+                <li>kierowców kategorii prawa jazdy C, D, E;</li>
+                <li>kandydatów na kierowców zawodowych;</li>
+                <li>instruktorów i egzaminatorów nauki jazdy</li>
+                <li>kierowców pojazdów uprzywilejowanych i przewożących wartości pieniężne;</li>
+                <li>osób skierowanych przez lekarza;</li>
+                <li>osób skierowanych przez Policję, Urząd Miasta lub Gminy (np. za kierowanie pojazdem w stanie nietrzeźwości lub środka działającego podobnie do alkoholu, po przekroczeniu 24 punktów karnych za naruszenia przepisów ruchu drogowego);</li>
+                <li>kierujących pojazdami służbowymi kategorii B.</li>
+            </ul>
+            <hr></hr>
+            <h3 className="font-weight-bold font-italic">Cena badania dla kierowców - 150 zł</h3>
+            <hr></hr>
+            <h3 className="font-weight-bold font-italic">Cena badania dla kierujących pojazdami służbowymi – 100 zł</h3></div>)
+
+        var konsPorTitle=<div className="h2 text-center font-weight-bold">KONSULTACJE, PORADY PSYCHOLOGICZNE I WYCHOWAWCZE</div>;
+        var konsPorText=(<div>
+        <h4 className="text-center">
+            Konsultacje prowadzi psycholog i nauczyciel mianowany mgr Magdalena Paszkowska posiadająca wieloletnie doświadczenie zawodowe zdobyte w placówkach służby zdrowia oraz oświatowych. Ukończyła studia magisterskie na Uniwersytecie Gdańskim kierunek Psychologia, studia podyplomowe na Uniwersytecie Jagiellońskim kierunek Psychologia Transportu, Studium Socjoterapii i Treningu Interpersonalnego w Krakowskim Centrum Psychodynamicznym, a także liczne szkolenia tj.: kwalifikacyjny kurs pedagogiczny, trening asertywności, setting w pudełku, debriefing, pomoc psychologiczna rodzinie, terapia dzieci ze spektrum autyzmu i wiele innych. 
+            </h4>
+            <hr></hr>
+            <h3 className="font-weight-bold font-italic">Cena konsultacji - 120 zł (50 min.)</h3>
+        </div>)
+
+        var wazneInfoTitle=(<div className="h2 text-center font-weight-bold">WAŻNE INFORMACJE DLA BADANYCH</div>);
+        var wazneInfoText=(<div>
+            <h4 className="text-left">Na badanie należy koniecznie zabrać:</h4>
+                <ul className="h4  d-flex flex-column align-content-center flex-wrap">
+                <li>dowód tożsamości – dowód osobisty lub inny dokument ze zdjęciem;</li>
+                <li>prawo jazdy – dotyczy badania kierowców;</li>
+                <li>okulary lub soczewki- jeśli są używane;</li>
+                <li>skierowanie na badanie – jeśli zostało wydane.</li>
+                </ul>
+            <h4 className="text-left">UWAGA! Na badanie należy przyjść wypoczętym, zdrowym, a w dniu poprzedzającym badanie nie wolno
+spożywać alkoholu, leków lub innych środków psychoaktywnych.
+Badań nie przeprowadza się jeżeli:</h4>
+<ul className="h4  d-flex flex-column align-content-center flex-wrap">
+                <li>osoba badana informuje o złym stanie zdrowia lub samopoczuciu;</li>
+                <li>osoba badana znajduje się pod wpływem alkoholu.</li>
+                </ul>
+            </div>);
+
+
+        var introText=(<div>
+                <h2 className="text-center font-weight-bold">Pracownia Psychologiczna PsychoTech</h2>
+                <hr></hr>
+                <h3 className="text-center font-weight-bold">Badania psychologiczne – psychotesty dla kierowców i operatorów.</h3>
+                <hr></hr>
+                <h4 className="text-center">Nawiążemy współpracę z psychoterapeutami i psychologiem uprawnionym do badania osób ubiegających się o pozwolenie na broń.</h4>
+                <hr></hr>
+                <h4 className="text-center">Pracownia Psychologiczna PsychoTech wpisana jest pod numerem Z-PP109/2019 do rejestru przedsiębiorców prowadzących pracownię psychologiczną prowadzonego przez Marszałka Województwa Zachodniopomorskiego.
+                <br></br><br></br>
+                W pracowni wykonywane są badania psychologiczne (psychotechniczne) w zakresie psychologii transportu oraz dla potrzeb medycyny pracy. Udzielane są konsultacje i porady w zakresie trudności wychowawczych, rodzinnych, kryzysów życiowych.
+                <br></br><br></br>
+                Pracownia PsychoTech mieści się Szczecinie przy ul. Śląskiej 22/2. Czynna jest od poniedziałku do soboty.
+                Dodatkowo badania kierowców i operatorów wykonywane są w Goleniowie w przychodni Profimed w piątki oraz po uzgodnieniu w czwartki. Rejestracja telefoniczna pod numerem 574 556 455.</h4>
+            </div>);
+
+    ReactDOM.render(<FixedBaner/>, document.querySelector("header"));
+    ReactDOM.render(<React.Fragment>
+        <TextBox  innerText={introText}/>
+
+        <ImageTextGrid image="forklift.png" innerText={badPsychList} title={badPsychTitle}/>
+        <Parallax margin="left" image="volvoBig.jpg"/>
+
+
+        <ImageTextGrid image="trucks.png" innerText={badKierList} title={badKierTitle}/>
+        <Parallax margin="right" image="bus.jpg"/>
+
+
+        <ImageTextGrid image="office.jpg" innerText={konsPorText} title={konsPorTitle}/>
+        <Parallax margin="left" image="reminder.jpg"/>
+
+
+        <ImageTextGrid image="bulb.jpg" innerText={wazneInfoText} title={wazneInfoTitle}/>
+        <Parallax margin="right" image="traffic.jpg"/>
+
+        
+
+        </React.Fragment>
+        , document.querySelector("article"));
+    </script>
+    
+
+</body>
+</html>
